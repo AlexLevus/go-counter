@@ -23,10 +23,9 @@ func showName(w http.ResponseWriter, req *http.Request) {
 
 func main() {
     http.HandleFunc("/", showCounter)
-
     http.HandleFunc("/stat", increment)
     http.HandleFunc("/about", showName)
 
-	fmt.Printf("%v\n", "Listen 8080 port\n")
+    fmt.Printf("%v\n", "Listen 8080 port\n")
     http.ListenAndServe(":8080", nil)
 }
