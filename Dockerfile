@@ -2,13 +2,13 @@ FROM golang:1.16-alpine
 
 RUN apk update && apk add  curl
 
-WORKDIR /app
+WORKDIR /go/src/app
+COPY ./src .
 
-COPY go.mod ./
-COPY *.go ./
+RUN go get -d -v
+RUN go build -v
+RUN echo $PATH
+RUN ls
+RUN pwd
 
-RUN go build -o /counter
-
-EXPOSE 8080
-
-CMD [ "/counter" ]
+CMD [ "./go-counter" ]
