@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
@@ -12,8 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	"github.com/go-martini/martini"
 )
 
 type Counter struct {
@@ -57,13 +56,13 @@ func main() {
 
 	fmt.Println(counter.UpdatedAt)
 
-	m := martini.Classic()
+	r := gin.Default()
 
-	m.Get("/", func(res http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(res, "Счетчик равен %v\n. Счетчик был обновлен %v\n", counter.Value, counter.UpdatedAt.Time())
+	r.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "Счетчик равен %v\n. Счетчик был обновлен %v\n", counter.Value, counter.UpdatedAt.Time())
 	})
 
-	m.Get("/stat", func(res http.ResponseWriter, req *http.Request) {
+	r.GET("/stat", func(c *gin.Context) {
 		id, _ := primitive.ObjectIDFromHex("63692f15b50ce6ea336f9139")
 		filter := bson.D{{"_id", id}}
 
@@ -83,13 +82,15 @@ func main() {
 
 		counter.Value = counter.Value + 1
 		counter.UpdatedAt = primitive.NewDateTimeFromTime(updatedAt)
-		fmt.Fprintf(res, "Счетчик равен %v\n", counter.Value)
+		c.String(http.StatusOK, "Счетчик равен %v\n", counter.Value)
 	})
 
-	m.Get("/about", func(res http.ResponseWriter, req *http.Request) {
-		res.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprintf(res, "<h3> Hello, Александр Левусь</h3>")
+	r.GET("/about", func(c *gin.Context) {
+		r.LoadHTMLGlob("templates/*")
+		c.HTML(http.StatusOK, "about.tmpl", gin.H{
+			"name": "Александр Левусь",
+		})
 	})
 
-	m.RunOnAddr(":12345")
+	r.Run(":12345")
 }
