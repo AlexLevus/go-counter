@@ -1,14 +1,9 @@
-FROM golang:1.16-alpine
+FROM golang:1.18
 
-RUN apk update && apk add  curl
+COPY . /go/src/app/
 
-WORKDIR /go/src/app
-COPY ./src .
+WORKDIR /go/src/app/
 
-RUN go get -d -v
-RUN go build -v
-RUN echo $PATH
-RUN ls
-RUN pwd
+RUN go build -o ./cmd/main ./cmd/main.go
 
-CMD [ "./go-counter" ]
+ENTRYPOINT [ "./cmd/main" ]
