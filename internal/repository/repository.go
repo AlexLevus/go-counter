@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -32,10 +33,11 @@ func NewRepository() (*Repository, error) {
 		log.Fatal(err)
 	}
 
-	_, err = client.ListDatabaseNames(ctx, bson.M{})
+	databases, err := client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(databases)
 
 	collection := client.Database("CounterDB").Collection("Counter")
 
