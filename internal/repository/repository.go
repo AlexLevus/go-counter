@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"os"
 	"time"
 )
 
@@ -22,7 +23,7 @@ type Counter struct {
 }
 
 func NewRepository() (*Repository, error) {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://test-user:go-counter@countercluster.qocflvg.mongodb.net/?retryWrites=true&w=majority"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGODB_URI")))
 	if err != nil {
 		log.Fatal(err)
 	}
