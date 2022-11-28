@@ -1,9 +1,13 @@
 version: "3.9"
+
 services:
-  web:
+  counter-service:
+    image: levis38/go-counter
     build: .
     ports:
-      - "12345:12345"
+      - "9040-9044:12345"
+    deploy:
+      replicas: 4
     environment:
       MONGODB_URI: "mongodb+srv://test-user:go-counter@countercluster.qocflvg.mongodb.net/?retryWrites=true&w=majority"
       PORT: "12345"
